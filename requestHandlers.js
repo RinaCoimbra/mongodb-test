@@ -112,7 +112,7 @@ function insertIntoDatabase(response, request){
 }
 
 function getFromMongo(response, request){
-  models.insertIntoDatabase(response);
+  models.getDocumentsFromMongo(response);
 }
 
 exports.start = start;

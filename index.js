@@ -11,5 +11,6 @@ handle["/initialPokemon"] = requestHandlers.initialPokemon;
 handle["/myLeagueData"] = requestHandlers.myLeagueData;
 handle["/pagepage"] = requestHandlers.pagepage;
 handle["/insertDocument"] = requestHandlers.insertIntoDatabase;
+handle["/getDocumentsFromMongo"] = requestHandlers.getFromMongo;
 
 server.start(router.route, handle);

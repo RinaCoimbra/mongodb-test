@@ -34,9 +34,9 @@ var harry = {
 }
 
 var insertDocument = function(db, callback) {
-  db.collection('restaurants').insertOne( restaurant_1, function(err, result) {
+  db.collection('restaurants').insertOne(restaurant_1, function(err, result) {
     assert.equal(err, null);
-    console.log("Inserted a document into the AlunoHogwarts collection.");
+    console.log("Inserted a document into the restaurants collection.");
     callback(result);
   });
 };
@@ -47,7 +47,7 @@ var findRestaurants = function(db, callback) {
   cursor.each(function(err, doc) {
     assert.equal(err, null);
     if (doc != null) {
-      data.append(doc);
+      data.push(doc);
       console.dir(doc);
     } else {
       callback(data);
