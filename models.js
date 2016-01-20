@@ -22,7 +22,7 @@ var restaurant_1 = {
     "grade": "B",
     "score": 17
   }],
-  "name": "Vella",
+  "name": "Pizzaiolo",
   "restaurant_id": "41704620"
 };
 
@@ -65,19 +65,44 @@ function insertDocumentIntoMongo() {
 };
 
 
+function end_request(response, data_print){
+      response.writeHead(200, {
+        "Content-Type": "text/json"
+      });
+      response.write(JSON.stringify(data_print));
+      response.end();
+}
+
 function getDocumentsFromMongo(response) {
   MongoClient.connect(url, function(err, db) {
     assert.equal(null, err);
     findRestaurants(db, function(data) {
       db.close();
-      response.writeHead(200, {
-        "Content-Type": "text/json"
-      });
-      response.write(JSON.stringify(data));
-      response.end();
+      end_request(response, data)
     });
   });
-}
+};
+
+var removeRestaurants = function(db, callback) {
+   db.collection('restaurants').deleteMany(
+      { "name": "Pizzaiolo" },
+      function(err, results) {
+         console.log(results);
+         callback();
+      }
+   );
+};
+
+var removeFromMongo = function(response){
+  MongoClient.connect(url, function(err, db) {
+    assert.equal(null, err);
+    removeRestaurants(db, function() {
+        db.close();
+        end_request(response, {});
+    });
+  });
+};
 
 exports.insertDocumentIntoMongo = insertDocumentIntoMongo;
 exports.getDocumentsFromMongo = getDocumentsFromMongo;
+exports.removeFromMongo = removeFromMongo;

@@ -115,6 +115,10 @@ function getFromMongo(response, request){
   models.getDocumentsFromMongo(response);
 }
 
+function removeFromMongo(response){
+  models.removeFromMongo(response);
+}
+
 exports.start = start;
 exports.upload = upload;
 exports.show = show;
@@ -123,3 +127,4 @@ exports.myLeagueData = myLeagueData;
 exports.pagepage = pagepage;
 exports.insertIntoDatabase = insertIntoDatabase;
 exports.getFromMongo = getFromMongo;
+exports.removeFromMongo = removeFromMongo;

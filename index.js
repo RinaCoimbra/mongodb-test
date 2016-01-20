@@ -12,5 +12,6 @@ handle["/myLeagueData"] = requestHandlers.myLeagueData;
 handle["/pagepage"] = requestHandlers.pagepage;
 handle["/insertDocument"] = requestHandlers.insertIntoDatabase;
 handle["/getDocumentsFromMongo"] = requestHandlers.getFromMongo;
+handle["/removeFromMongo"] = requestHandlers.removeFromMongo;
 
 server.start(router.route, handle);
