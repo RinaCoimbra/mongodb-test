@@ -105,7 +105,8 @@ function pagepage(response){
     });
 }
 
-function insertIntoDatabase(response){
+function insertIntoDatabase(response, request){
+  console.log()
   models.insertDocumentIntoMongo();
   response.writeHead(200);
   response.end();

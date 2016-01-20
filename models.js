@@ -1,7 +1,7 @@
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
-var url = "mongodb://heroku_3h7dws7z:cbedvslhinh4b2c3okque48l5l@ds047355.mongolab.com:47355/heroku_3h7dws7z";
+var url = "process.env.MONGOLAB_URI" || "mongodb://localhost/test";
 
 
 
