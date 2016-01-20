@@ -106,10 +106,13 @@ function pagepage(response){
 }
 
 function insertIntoDatabase(response, request){
-  console.log()
   models.insertDocumentIntoMongo();
   response.writeHead(200);
   response.end();
+}
+
+function getFromMongo(response, request){
+  models.insertIntoDatabase(response);
 }
 
 exports.start = start;
@@ -119,3 +122,4 @@ exports.initialPokemon = initialPokemon;
 exports.myLeagueData = myLeagueData;
 exports.pagepage = pagepage;
 exports.insertIntoDatabase = insertIntoDatabase;
+exports.getFromMongo = getFromMongo;

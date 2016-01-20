@@ -26,13 +26,15 @@ var restaurant_1 = {
   "restaurant_id": "41704620"
 };
 
+var harry = {
+  "Nome": "Harry Potter",
+  "Casa": "Grifinória",
+  "Mae": "Lilian Potter",
+  "Pai": "James Potter"
+}
+
 var insertDocument = function(db, callback) {
-  db.collection('AlunoHogwarts').insertOne({
-    "Nome": "Harry Potter",
-    "Casa": "Grifinória",
-    "Mae": "Lilian Potter",
-    "Pai": "James Potter",
-  }, function(err, result) {
+  db.collection('restaurants').insertOne( restaurant_1, function(err, result) {
     assert.equal(err, null);
     console.log("Inserted a document into the AlunoHogwarts collection.");
     callback(result);
@@ -40,13 +42,15 @@ var insertDocument = function(db, callback) {
 };
 
 var findRestaurants = function(db, callback) {
+  var data = [];
   var cursor = db.collection('restaurants').find();
   cursor.each(function(err, doc) {
     assert.equal(err, null);
     if (doc != null) {
+      data.append(doc);
       console.dir(doc);
     } else {
-      callback();
+      callback(data);
     }
   });
 };
@@ -60,4 +64,20 @@ function insertDocumentIntoMongo() {
   });
 };
 
+
+function getDocumentsFromMongo(response) {
+  MongoClient.connect(url, function(err, db) {
+    assert.equal(null, err);
+    findRestaurants(db, function(data) {
+      db.close();
+      response.writeHead(200, {
+        "Content-Type": "text/json"
+      });
+      response.write(JSON.stringify(data));
+      response.end();
+    });
+  });
+}
+
 exports.insertDocumentIntoMongo = insertDocumentIntoMongo;
+exports.getDocumentsFromMongo = getDocumentsFromMongo;
