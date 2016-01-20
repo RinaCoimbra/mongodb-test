@@ -2,6 +2,7 @@ var querystring = require("querystring"),
     fs = require("fs"),
     formidable = require("formidable");
 var http = require("https");
+var models = require("./models");
 
 function start(response) {
   console.log("Request handler 'start' was called.");
@@ -65,14 +66,14 @@ function initialPokemon(response) {
 function getUrl(url, response2, callback){
   var request = http.get(url, function (response) {
     // data is streamed in chunks from the server
-    // so we have to handle the "data" event    
-    var buffer = "", 
+    // so we have to handle the "data" event
+    var buffer = "",
         data,
         route;
 
     response.on("data", function (chunk) {
         buffer += chunk;
-    }); 
+    });
 
     response.on("end", function (err) {
         // finished transferring data
@@ -81,8 +82,8 @@ function getUrl(url, response2, callback){
         console.log("\n");
         data = JSON.parse(buffer);
         callback(data, response2);
-    }); 
-}); 
+    });
+});
 }
 
 function returnLeagueData(data, response){
@@ -104,9 +105,16 @@ function pagepage(response){
     });
 }
 
+function insertIntoDatabase(response){
+  models.insertDocumentIntoMongo();
+  response.writeHead(200);
+  response.end();
+}
+
 exports.start = start;
 exports.upload = upload;
 exports.show = show;
 exports.initialPokemon = initialPokemon;
 exports.myLeagueData = myLeagueData;
 exports.pagepage = pagepage;
+exports.insertIntoDatabase = insertIntoDatabase;

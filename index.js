@@ -10,5 +10,6 @@ handle["/show"] = requestHandlers.show;
 handle["/initialPokemon"] = requestHandlers.initialPokemon;
 handle["/myLeagueData"] = requestHandlers.myLeagueData;
 handle["/pagepage"] = requestHandlers.pagepage;
+handle["/insertDocument"] = requestHandlers.insertIntoDatabase;
 
 server.start(router.route, handle);
