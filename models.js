@@ -33,8 +33,14 @@ var harry = {
   "Pai": "James Potter"
 }
 
+var hermione = {
+  "Nome": "Hermione"
+}
+
+var alunosHogwarts = [harry, hermione];
+
 var insertDocument = function(db, callback) {
-  db.collection('restaurants').insertOne(restaurant_1, function(err, result) {
+  db.collection('Hogwarts').insertMany(alunosHogwarts, function(err, result) {
     assert.equal(err, null);
     console.log("Inserted a document into the restaurants collection.");
     callback(result);
@@ -43,7 +49,7 @@ var insertDocument = function(db, callback) {
 
 var findRestaurants = function(db, callback) {
   var data = [];
-  var cursor = db.collection('restaurants').find();
+  var cursor = db.collection('Hogwarts').find();
   cursor.each(function(err, doc) {
     assert.equal(err, null);
     if (doc != null) {

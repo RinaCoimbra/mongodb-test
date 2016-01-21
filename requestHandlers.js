@@ -92,8 +92,10 @@ function returnLeagueData(data, response){
   response.end();
 }
 
-function myLeagueData(response){
-  var url = "https://na.api.pvp.net/api/lol/br/v1.4/summoner/by-name/RinaLovelace?api_key=7c20378c-001e-4639-ab96-669be9f17f7f";
+function myLeagueData(response, request){
+  console.log(request.body);
+  var invocador = request.body.invocador;
+  var url = "https://na.api.pvp.net/api/lol/br/v1.4/summoner/by-name/"+invocador+"?api_key=7c20378c-001e-4639-ab96-669be9f17f7f";
   getUrl(url, response, returnLeagueData);
 }
 
