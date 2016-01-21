@@ -13,5 +13,7 @@ handle["/pagepage"] = requestHandlers.pagepage;
 handle["/insertDocument"] = requestHandlers.insertIntoDatabase;
 handle["/getDocumentsFromMongo"] = requestHandlers.getFromMongo;
 handle["/removeFromMongo"] = requestHandlers.removeFromMongo;
+handle["/printjson"] = requestHandlers.printJson;
+handle["/inserejson"] = requestHandlers.insereJson;
 
 server.start(router.route, handle);

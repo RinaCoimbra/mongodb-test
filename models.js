@@ -39,8 +39,8 @@ var hermione = {
 
 var alunosHogwarts = [harry, hermione];
 
-var insertDocument = function(db, callback) {
-  db.collection('Hogwarts').insertMany(alunosHogwarts, function(err, result) {
+var insertDocument = function(colecao, dados, db, callback) {
+  db.collection(colecao).insertOne(dados, function(err, result) {
     assert.equal(err, null);
     console.log("Inserted a document into the restaurants collection.");
     callback(result);
@@ -49,7 +49,7 @@ var insertDocument = function(db, callback) {
 
 var findRestaurants = function(db, callback) {
   var data = [];
-  var cursor = db.collection('Hogwarts').find();
+  var cursor = db.collection('Harry').find();
   cursor.each(function(err, doc) {
     assert.equal(err, null);
     if (doc != null) {
@@ -61,15 +61,15 @@ var findRestaurants = function(db, callback) {
   });
 };
 
-function insertDocumentIntoMongo() {
+function insertDocumentIntoMongo(response, colecao, dados) {
   MongoClient.connect(url, function(err, db) {
     assert.equal(null, err);
-    insertDocument(db, function() {
+    insertDocument(colecao, dados, db, function() {
       db.close();
+      end_request(response, dados);
     });
   });
 };
-
 
 function end_request(response, data_print){
       response.writeHead(200, {
@@ -112,3 +112,4 @@ var removeFromMongo = function(response){
 exports.insertDocumentIntoMongo = insertDocumentIntoMongo;
 exports.getDocumentsFromMongo = getDocumentsFromMongo;
 exports.removeFromMongo = removeFromMongo;
+exports.end_request = end_request;

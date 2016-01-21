@@ -93,7 +93,8 @@ function returnLeagueData(data, response){
 }
 
 function myLeagueData(response, request){
-  console.log(request.body);
+  request.body = {"invocador": "gstcamargo"};
+  
   var invocador = request.body.invocador;
   var url = "https://na.api.pvp.net/api/lol/br/v1.4/summoner/by-name/"+invocador+"?api_key=7c20378c-001e-4639-ab96-669be9f17f7f";
   getUrl(url, response, returnLeagueData);
@@ -121,6 +122,17 @@ function removeFromMongo(response){
   models.removeFromMongo(response);
 }
 
+function printJson(response, request){
+  models.end_request(response, request.body);
+}
+
+function insereJson(response, request){
+  var dados = request.body.dados;
+  var colecao = request.body.colecao;
+  models.insertDocumentIntoMongo(response, colecao, dados);
+}
+
+
 exports.start = start;
 exports.upload = upload;
 exports.show = show;
@@ -130,3 +142,5 @@ exports.pagepage = pagepage;
 exports.insertIntoDatabase = insertIntoDatabase;
 exports.getFromMongo = getFromMongo;
 exports.removeFromMongo = removeFromMongo;
+exports.printJson = printJson;
+exports.insereJson = insereJson;
