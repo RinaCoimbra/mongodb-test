@@ -193,7 +193,7 @@ function populateMongo(response) {
   var colecao = "Pokemons";
 
   /* Insiro todos no banco de dados */
-  models.insertDocumentIntoMongo(response, colecao, pokemons);
+  models.connectToMongo(response, colecao, [dados], models.insertDocuments);
 }
 
 /* getAllFromMongo: retorna todos os documentos da colecao especificada */
@@ -203,12 +203,14 @@ function getAllFromMongo(response) {
   var filtro = {};
 
   /* Faco a busca para retornar todos */
-  models.getDocumentsFromMongo(response, filtro, colecao);
+  models.connectToMongo(response, colecao, filtro, models.getDocuments);
 }
 
-/* TODO: parametrizar a funcao de recomecao :D */
+/* TODO: parametrizar a funcao de remocao :D */
 function removeFromMongo(response) {
-  models.removeFromMongo(response);
+  var filtro = {};
+  var colecao = "Pokemons";
+  models.connectToMongo(response, colecao, filtro, models.removeDocuments);
 }
 
 /* printJson: recebe um json via most e responde o mesmo json */
@@ -248,9 +250,9 @@ function insereJson(response, request) {
   // Extrai os dados e realiza o inserte.
   var dados = request.body.dados;
   var colecao = request.body.colecao;
-  // Coloquei [ ] ao redor de dados pois estou usando o insertMany na funcao em 
+  // Coloquei [ ] ao redor de dados pois estou usando o insertMany na funcao em
   // models. Porem, como eh um vetor de 1 elemento, insere só um.
-  models.insertDocumentIntoMongo(response, colecao, [dados]);
+  models.connectToMongo(response, colecao, [dados], models.insertDocuments);
 }
 
 /* buscafiltro: busca os dados em uma colecao, utilizando um filtro
@@ -286,7 +288,7 @@ function buscafiltro(response, request) {
   // Realiza a busca na colecao utilizando o filtro.
   var filtro = request.body.filtro;
   var colecao = request.body.colecao;
-  models.getDocumentsFromMongo(response, filtro, colecao);
+  models.connectToMongo(response, colecao, filtro, models.getDocuments);
 }
 
 // Lembrem-se sempre dos exports, eles seram utilizados no arquivo index.js :D
