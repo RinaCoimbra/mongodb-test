@@ -51,8 +51,8 @@ var getDocuments = function(colecao, filtro, db, callback) {
  * @db: variavel que contem o banco de dados aberto
  * @callback: funcao para ser executada ao final da operacao de insercao.
  */
-var removeDocuments = function(colecao, dados, db, callback) {
-  db.collection('Pokemons').deleteMany({},
+var removeDocuments = function(colecao, filtro, db, callback) {
+  db.collection(colecao).deleteMany(filtro,
     function(err, results) {
       console.log(results);
       callback(results);
@@ -64,11 +64,11 @@ var removeDocuments = function(colecao, dados, db, callback) {
  * @response: o proprio response do server.
  * @data_print: dados a serem imprimidos na tela.
  */
-function end_request(response, data_print) {
+function end_request(response, data_do_mongo) {
   response.writeHead(200, {
     "Content-Type": "text/json"
   });
-  response.write(JSON.stringify(data_print));
+  response.write(JSON.stringify(data_do_mongo));
   response.end();
 }
 

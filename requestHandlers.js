@@ -82,6 +82,7 @@ function initialPokemon(response) {
   response.writeHead(200, {
     "Content-Type": "text/json"
   });
+
   response.write(JSON.stringify([pkm, digimon]));
   response.end();
 }
@@ -141,7 +142,7 @@ function returnLeagueData(data, response) {
 /* myLeagueData: retorna os dados de um invocador, recebe invocador via POST */
 function myLeagueData(response, request) {
   /* Precisa receber um json no seguinte formato:
-   * {"invocador": <nome_de_invocador>}
+   * {"invocador": "nome_de_invocador"}
    */
   if (!request.body.invocador) {
     erro_json_invalido(response, {
@@ -291,6 +292,26 @@ function buscafiltro(response, request) {
   models.connectToMongo(response, colecao, filtro, models.getDocuments);
 }
 
+
+function removefiltro(response, request) {
+  var exemplo_valido = {
+    "filtro": {
+      "tipo": "Agua"
+    },
+    "colecao": "Pokemons"
+  };
+  // Verifica se esta valido
+  if (!request.body.filtro || !request.body.colecao) {
+    erro_json_invalido(response, exemplo_valido);
+    return;
+  }
+  // Realiza a busca na colecao utilizando o filtro.
+  var filtro = request.body.filtro;
+  var colecao = request.body.colecao;
+  models.connectToMongo(response, colecao, filtro, models.removeDocuments);
+}
+
+
 // Lembrem-se sempre dos exports, eles seram utilizados no arquivo index.js :D
 exports.start = start;
 exports.upload = upload;
@@ -304,3 +325,4 @@ exports.removeFromMongo = removeFromMongo;
 exports.printJson = printJson;
 exports.insereJson = insereJson;
 exports.buscafiltro = buscafiltro;
+exports.removefiltro = removefiltro;

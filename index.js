@@ -16,7 +16,7 @@ handle["/show"] = requestHandlers.show;
 handle["/initialPokemon"] = requestHandlers.initialPokemon;
 
 
-/* myLeagueData: recebe um json {"invocador":<nome_de_invocador>} e devolve os
+/* myLeagueData: recebe um json {"invocador": "nome_de_invocador"} e devolve os
  * dados da API de League of Legends
  */
 handle["/myLeagueData"] = requestHandlers.myLeagueData;
@@ -56,12 +56,12 @@ handle["/inserejson"] = requestHandlers.insereJson;
 
 /* buscafiltro -> recebe o filtro e a coleção para buscar no mongo
  * POST: recebe como post objetos json com os campos "filtro" e "colecao"
- *       ex: {"filtro": {"kiwi": "verde"s}, "colecao": "nome_da_colecao"}
- *           {"kiwi": "verde"} poderia ser qualquer json valido
+ *       ex: {"filtro": {"kiwi": "verde"}, "colecao": "nome_da_colecao"}
+ *           {"kiwi": "verde"} é um json com uma tag só.
  *           caso o filtro seja vazio: {} - retorna tudo da colecao
  * RESPONSE: retorna o resultado da busca
  */
 handle["/buscafiltro"] = requestHandlers.buscafiltro;
-
+handle["/removefiltro"] = requestHandlers.removefiltro;
 
 server.start(router.route, handle);
