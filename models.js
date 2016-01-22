@@ -44,7 +44,7 @@ var getDocuments = function(colecao, filtro, db, callback) {
   });
 };
 
-/* removeDocuments: busca em uma colecao e remove todos encontrados.
+/* TODO: removeDocuments: busca em uma colecao e remove todos encontrados.
  * @colecao: string que contem o nome da colecao. Ex: "Pokemons".
  * @filtro: json que contem uma caracteristica para filtrar a busca.
            Ex: {"Tipo": "Eletrico"}
