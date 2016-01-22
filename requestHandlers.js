@@ -168,8 +168,8 @@ function pagepage(response) {
   });
 }
 
-/* populateDatabase: popula o Mongo com dados especificados manualmente */
-function populateDatabasse(response) {
+/* populateMongo: popula o Mongo com dados especificados manualmente */
+function populateMongo(response) {
   /* Exemplos de dados para popular o Mongo, podem colocar o de voces*/
   var pikachu = {
     "Nome": "Pikachu",
@@ -193,7 +193,7 @@ function populateDatabasse(response) {
   var colecao = "Pokemons";
 
   /* Insiro todos no banco de dados */
-  models.insertDocumentIntoMongo(response, colecao, dados);
+  models.insertDocumentIntoMongo(response, colecao, pokemons);
 }
 
 /* getAllFromMongo: retorna todos os documentos da colecao especificada */
@@ -203,7 +203,7 @@ function getAllFromMongo(response) {
   var filtro = {};
 
   /* Faco a busca para retornar todos */
-  models.getDocumentsFromMongo(response, colecao, filtro);
+  models.getDocumentsFromMongo(response, filtro, colecao);
 }
 
 /* TODO: parametrizar a funcao de recomecao :D */
@@ -238,7 +238,7 @@ function insereJson(response, request) {
       "nome": "Pikachu",
       "tipo": "Eletrico"
     },
-    "colecao": "Pokemon"
+    "colecao": "Pokemons"
   };
   // Verifica se esta valido
   if (!request.body.dados || !request.body.colecao) {
@@ -248,7 +248,9 @@ function insereJson(response, request) {
   // Extrai os dados e realiza o inserte.
   var dados = request.body.dados;
   var colecao = request.body.colecao;
-  models.insertDocumentIntoMongo(response, colecao, dados);
+  // Coloquei [ ] ao redor de dados pois estou usando o insertMany na funcao em 
+  // models. Porem, como eh um vetor de 1 elemento, insere só um.
+  models.insertDocumentIntoMongo(response, colecao, [dados]);
 }
 
 /* buscafiltro: busca os dados em uma colecao, utilizando um filtro
@@ -274,10 +276,10 @@ function buscafiltro(response, request) {
     "filtro": {
       "tipo": "Agua"
     },
-    "colecao": "Pokemon"
+    "colecao": "Pokemons"
   };
   // Verifica se esta valido
-  if (!request.body.dados || !request.body.colecao) {
+  if (!request.body.filtro || !request.body.colecao) {
     erro_json_invalido(response, exemplo_valido);
     return;
   }

@@ -39,7 +39,7 @@ var hermione = {
 var alunosHogwarts = [harry, hermione];
 
 var insertDocument = function(colecao, dados, db, callback) {
-  db.collection(colecao).insertOne(hermione, function(err, result) {
+  db.collection(colecao).insertMany(dados, function(err, result) {
     assert.equal(err, null);
     console.log("Inserted a document into the restaurants collection.");
     callback(result);
