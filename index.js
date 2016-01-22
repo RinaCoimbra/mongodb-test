@@ -32,8 +32,8 @@ handle["/pagepage"] = requestHandlers.pagepage;
  * getDocumentsFromMongo -> pega todos da coleção predefinida
  * removeFromMongo -> remove todos da colecao predefinida
  */
-handle["/insertDocument"] = requestHandlers.insertIntoDatabase;
-handle["/getDocumentsFromMongo"] = requestHandlers.getFromMongo;
+handle["/populateMongo"] = requestHandlers.populateMongo;
+handle["/getDocumentsFromMongo"] = requestHandlers.getAllFromMongo;
 handle["/removeFromMongo"] = requestHandlers.removeFromMongo;
 
 

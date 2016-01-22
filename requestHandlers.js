@@ -1,6 +1,6 @@
 var querystring = require("querystring"),
-    fs = require("fs"),
-    formidable = require("formidable");
+  fs = require("fs"),
+  formidable = require("formidable");
 var http = require("https");
 var models = require("./models");
 
@@ -8,23 +8,25 @@ var models = require("./models");
 function start(response) {
   console.log("Request handler 'start' was called.");
 
-  var body = '<html>'+
-    '<head>'+
-    '<meta http-equiv="Content-Type" '+
-    'content="text/html; charset=UTF-8" />'+
-    '</head>'+
-    '<body>'+
-    '<form action="/upload" enctype="multipart/form-data" '+
-    'method="post">'+
-    '<input type="file" name="upload" multiple="multiple">'+
-    '<input type="submit" value="Upload file" />'+
-    '</form>'+
-    '</body>'+
+  var body = '<html>' +
+    '<head>' +
+    '<meta http-equiv="Content-Type" ' +
+    'content="text/html; charset=UTF-8" />' +
+    '</head>' +
+    '<body>' +
+    '<form action="/upload" enctype="multipart/form-data" ' +
+    'method="post">' +
+    '<input type="file" name="upload" multiple="multiple">' +
+    '<input type="submit" value="Upload file" />' +
+    '</form>' +
+    '</body>' +
     '</html>';
 
-    response.writeHead(200, {"Content-Type": "text/html"});
-    response.write(body);
-    response.end();
+  response.writeHead(200, {
+    "Content-Type": "text/html"
+  });
+  response.write(body);
+  response.end();
 }
 
 /* upload: exemplo de como fazer um upload de arquivo */
@@ -44,7 +46,9 @@ function upload(response, request) {
         fs.rename(files.upload.path, "/tmp/test.png");
       }
     });
-    response.writeHead(200, {"Content-Type": "text/html"});
+    response.writeHead(200, {
+      "Content-Type": "text/html"
+    });
     response.write("received image:<br/>");
     response.write("<img src='/show' />");
     response.end();
@@ -54,7 +58,9 @@ function upload(response, request) {
 /* show: exemplo de como retonar uma imagem na request */
 function show(response) {
   console.log("Request handler 'show' was called.");
-  response.writeHead(200, {"Content-Type": "image/png"});
+  response.writeHead(200, {
+    "Content-Type": "image/png"
+  });
   fs.createReadStream("/tmp/test.png").pipe(response);
 }
 
@@ -69,85 +75,213 @@ function show(response) {
  */
 function initialPokemon(response) {
   var pkm = ["Charmander", "Squirtle", "Bulbasaur"];
-  var digimon = {"nome": "agumon", "evolucoes": ["greymon", "wargreymon"]};
-  response.writeHead(200, {"Content-Type": "text/json"});
+  var digimon = {
+    "nome": "agumon",
+    "evolucoes": ["greymon", "wargreymon"]
+  };
+  response.writeHead(200, {
+    "Content-Type": "text/json"
+  });
   response.write(JSON.stringify([pkm, digimon]));
   response.end();
 }
 
-function getUrl(url, response2, callback){
-  var request = http.get(url, function (response) {
-    // data is streamed in chunks from the server
-    // so we have to handle the "data" event
+/* erro_json_invalido: chamar quando o json nao estiver valido
+ * @response: variavel response do servidor
+ * @formato_valido: json contendo um exemplo valido de dados
+ * response: erro para o usuario da API e exemplo de formato valido
+ */
+function erro_json_invalido(response, formato_valido) {
+  var json_invalido = {
+    "erro": "json invalido",
+    "modelo": formato_valido
+  };
+  models.end_request(response, json_invalido);
+}
+
+/* getURL: faz o get dos dados da API especificada na URL
+ * @url: url da API
+ * @response: response do server
+ * @callback: funcao para ser executada quando acabar de receber os dados da API
+ */
+function getUrl(url, response, callback) {
+  var request = http.get(url, function(res) {
+    // os dados vem do servidor em pedacinhos, temos que esperar todos chegarem
     var buffer = "",
-        data,
-        route;
+      data,
+      route;
 
-    response.on("data", function (chunk) {
-        buffer += chunk;
+    // enquanto esta recebendo os pedacinhos, vai adicionhando todos no buffer
+    res.on("data", function(chunk) {
+      buffer += chunk;
     });
 
-    response.on("end", function (err) {
-        // finished transferring data
-        // dump the raw data
-        console.log(buffer);
-        console.log("\n");
-        data = JSON.parse(buffer);
-        callback(data, response2);
+    // quando acabar, ele entra aqui, no "end"
+    res.on("end", function(err) {
+      // print no console
+      console.log(buffer);
+      console.log("\n");
+
+      // transforma a string em objeto json
+      data = JSON.parse(buffer);
+      /* executa o callback, ou seja, a funcao que a gente passou pra ser
+        executada no fim */
+      callback(data, response);
     });
-});
+  });
 }
 
 /* returnLeagueData: Finaliza a request para a API do League.
  * essa funcao eh utilizada como callback na funcao acima.
  */
-function returnLeagueData(data, response){
+function returnLeagueData(data, response) {
   models.end_request(response, data);
 }
 
-function myLeagueData(response, request){
+/* myLeagueData: retorna os dados de um invocador, recebe invocador via POST */
+function myLeagueData(response, request) {
   /* Precisa receber um json no seguinte formato:
    * {"invocador": <nome_de_invocador>}
    */
+  if (!request.body.invocador) {
+    erro_json_invalido(response, {
+      "invocador": "RinaLovelace"
+    });
+    return;
+  }
   var invocador = request.body.invocador;
   /* url: a url da API de league */
-  var url = "https://na.api.pvp.net/api/lol/br/v1.4/summoner/by-name/"+invocador+"?api_key=7c20378c-001e-4639-ab96-669be9f17f7f";
+  var url = "https://na.api.pvp.net/api/lol/br/v1.4/summoner/by-name/" + invocador + "?api_key=7c20378c-001e-4639-ab96-669be9f17f7f";
   getUrl(url, response, returnLeagueData);
 }
 
-function pagepage(response){
-  fs.readFile('helloworld.html',function (err, data){
-        response.writeHead(200, {'Content-Type': 'text/html','Content-Length':data.length});
-        response.write(data);
-        response.end();
+/* pagepage: retorna uma pagina html que busca nos arquivos */
+function pagepage(response) {
+  //le o arquivo "helloworld.html" e responde para o front.
+  fs.readFile('helloworld.html', function(err, data) {
+    response.writeHead(200, {
+      'Content-Type': 'text/html',
+      'Content-Length': data.length
     });
+    response.write(data);
+    response.end();
+  });
 }
 
-function insertIntoDatabase(response, request){
-  models.insertDocumentIntoMongo();
-  response.writeHead(200);
-  response.end();
+/* populateDatabase: popula o Mongo com dados especificados manualmente */
+function populateDatabasse(response) {
+  /* Exemplos de dados para popular o Mongo, podem colocar o de voces*/
+  var pikachu = {
+    "Nome": "Pikachu",
+    "Tipo": "Eletrico",
+    "Evolucoes": ["Raichu"]
+  }
+
+  var squirtle = {
+    "Nome": "Squirtle",
+    "Tipo": "Agua",
+    "Evolucoes": ["Wartortle", "Blastoise"]
+  }
+
+  var wartortle = {
+    "Nome": "Wartortle",
+    "Tipo": "Agua",
+    "Evolucoes": ["Blastoise"]
+  }
+
+  var pokemons = [pikachu, squirtle, wartortle];
+  var colecao = "Pokemons";
+
+  /* Insiro todos no banco de dados */
+  models.insertDocumentIntoMongo(response, colecao, dados);
 }
 
-function getFromMongo(response, request){
-  models.getDocumentsFromMongo(response);
+/* getAllFromMongo: retorna todos os documentos da colecao especificada */
+function getAllFromMongo(response) {
+  /* Setando colecao para Pokemons e filtro para vazio para retornar todos*/
+  var colecao = "Pokemons";
+  var filtro = {};
+
+  /* Faco a busca para retornar todos */
+  models.getDocumentsFromMongo(response, colecao, filtro);
 }
 
-function removeFromMongo(response){
+/* TODO: parametrizar a funcao de recomecao :D */
+function removeFromMongo(response, ) {
   models.removeFromMongo(response);
 }
 
-function printJson(response, request){
+/* printJson: recebe um json via most e responde o mesmo json */
+function printJson(response, request) {
   models.end_request(response, request.body);
 }
 
-function insereJson(response, request){
+/* insereJson: insere os dados de um json em uma colecao
+ * @request.body exemplo: {"dados": {"especie": "golfinho"},
+ *                         "colecao": "animais"}
+ * responde: os dados inserids no Mongo
+ */
+function insereJson(response, request) {
+  /* Lembrete: sou eu que defino qual vai ser o formato de JSON aceito.
+     Neste caso defini o formato:
+        { "dados": {}, "colecao": "nome_da_colecao"}
+     Portanto, acesso os dados como request.body.dados e
+       acesso a colecao como request.body.colecao
+     Se eu tivesse definido meu formato padrao de json como:
+        { "banana": {"cor": "amarela"}, "fruta": "doce"},
+        eu acessaria os dados de banana como request.body.banana
+        e a caracteristica de fruta como request.body.fruta.
+     Portanto, é preciso verificar se os dados definidos batem com os
+        dados especificados.*/
+  var exemplo_valido = {
+    "dados": {
+      "nome": "Pikachu",
+      "tipo": "Eletrico"
+    },
+    "colecao": "Pokemon"
+  };
+  // Verifica se esta valido
+  if (!request.body.dados || !request.body.colecao) {
+    erro_json_invalido(response, exemplo_valido);
+    return;
+  }
+  // Extrai os dados e realiza o inserte.
   var dados = request.body.dados;
   var colecao = request.body.colecao;
   models.insertDocumentIntoMongo(response, colecao, dados);
 }
 
-function buscafiltro(response, request){
+/* buscafiltro: busca os dados em uma colecao, utilizando um filtro
+ * @request.body exemplo: {"filtro": {"classe": "mamifero"},
+ *                         "colecao": "animais"}
+ *               filtraria por todos os animais mamiferos :3
+ *               Lembrando que filtro {} retorna todos da colecao
+ * responde: resultados da busca.
+ */
+function buscafiltro(response, request) {
+  /* Lembrete: sou eu que defino qual vai ser o formato de JSON aceito.
+     Neste caso defini o formato:
+        { "filtro": {}, "colecao": "nome_da_colecao"}
+     Portanto, acesso os dados como request.body.filtro e
+       acesso a colecao como request.body.colecao
+     Se eu tivesse definido meu formato padrao de json como:
+        { "banana": {"cor": "amarela"}, "fruta": "doce"},
+        eu acessaria os dados de banana como request.body.banana
+        e a caracteristica de fruta como request.body.fruta.
+     Portanto, é preciso verificar se os dados definidos batem com os
+        dados especificados.*/
+  var exemplo_valido = {
+    "filtro": {
+      "tipo": "Agua"
+    },
+    "colecao": "Pokemon"
+  };
+  // Verifica se esta valido
+  if (!request.body.dados || !request.body.colecao) {
+    erro_json_invalido(response, exemplo_valido);
+    return;
+  }
+  // Realiza a busca na colecao utilizando o filtro.
   var filtro = request.body.filtro;
   var colecao = request.body.colecao;
   models.getDocumentsFromMongo(response, filtro, colecao);
@@ -160,8 +294,8 @@ exports.show = show;
 exports.initialPokemon = initialPokemon;
 exports.myLeagueData = myLeagueData;
 exports.pagepage = pagepage;
-exports.insertIntoDatabase = insertIntoDatabase;
-exports.getFromMongo = getFromMongo;
+exports.populateMongo = populateMongo;
+exports.getAllFromMongo = getAllFromMongo;
 exports.removeFromMongo = removeFromMongo;
 exports.printJson = printJson;
 exports.insereJson = insereJson;
