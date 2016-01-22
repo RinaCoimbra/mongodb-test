@@ -36,12 +36,10 @@ function end_request(response, data_print) {
 }
 
 var removeDocuments = function(colecao, dados, db, callback) {
-  db.collection('restaurants').deleteMany({
-      "name": "Pizzaiolo"
-    },
+  db.collection('Pokemons').deleteMany({},
     function(err, results) {
       console.log(results);
-      callback();
+      callback(results);
     }
   );
 };
@@ -49,9 +47,9 @@ var removeDocuments = function(colecao, dados, db, callback) {
 function connectToMongo(response, colecao, dados, callback) {
   MongoClient.connect(url, function(err, db) {
     assert.equal(null, err);
-    callback(colecao, dados, db, function() {
+    callback(colecao, dados, db, function(result) {
       db.close();
-      end_request(response, dados);
+      end_request(response, result);
     });
   });
 };
@@ -60,3 +58,4 @@ exports.insertDocuments = insertDocument;
 exports.getDocuments = getDocuments;
 exports.removeDocuments = removeDocuments;
 exports.end_request = end_request;
+exports.connectToMongo = connectToMongo;

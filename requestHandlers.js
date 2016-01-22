@@ -193,7 +193,7 @@ function populateMongo(response) {
   var colecao = "Pokemons";
 
   /* Insiro todos no banco de dados */
-  models.connectToMongo(response, colecao, [dados], models.insertDocuments);
+  models.connectToMongo(response, colecao, pokemons, models.insertDocuments);
 }
 
 /* getAllFromMongo: retorna todos os documentos da colecao especificada */
