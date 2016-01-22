@@ -207,7 +207,7 @@ function getAllFromMongo(response) {
 }
 
 /* TODO: parametrizar a funcao de recomecao :D */
-function removeFromMongo(response, ) {
+function removeFromMongo(response) {
   models.removeFromMongo(response);
 }
 
