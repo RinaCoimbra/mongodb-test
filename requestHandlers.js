@@ -4,6 +4,7 @@ var querystring = require("querystring"),
 var http = require("https");
 var models = require("./models");
 
+/* start: exemplo de como retornar html gerado no back-end para o front-end */
 function start(response) {
   console.log("Request handler 'start' was called.");
 
@@ -26,6 +27,7 @@ function start(response) {
     response.end();
 }
 
+/* upload: exemplo de como fazer um upload de arquivo */
 function upload(response, request) {
   console.log("Request handler 'upload' was called.");
 
@@ -49,17 +51,27 @@ function upload(response, request) {
   });
 }
 
+/* show: exemplo de como retonar uma imagem na request */
 function show(response) {
   console.log("Request handler 'show' was called.");
   response.writeHead(200, {"Content-Type": "image/png"});
   fs.createReadStream("/tmp/test.png").pipe(response);
 }
 
+/* initialPokemon: retorna um json com os pokemons iniciais.
+ * utilizamos essa funcao para ilustrar como funciona fazer nossa API :)
+ * progredimos muitão desde então né? :DDD
+ * Muita gente me perguntou como faço pra retornar dois jsons.
+ * Simples: junte os dois dentro de um vetor!
+ * No caso, coloquei pkm e digimon dentro do vetor.
+ * Não se esqueçam: antes de mandar para o front precisamos sempre dar o
+ * stringify nos jsons para transforma-los em strings.
+ */
 function initialPokemon(response) {
   var pkm = ["Charmander", "Squirtle", "Bulbasaur"];
   var digimon = {"nome": "agumon", "evolucoes": ["greymon", "wargreymon"]};
   response.writeHead(200, {"Content-Type": "text/json"});
-  response.write(JSON.stringify(digimon));
+  response.write(JSON.stringify([pkm, digimon]));
   response.end();
 }
 
@@ -86,16 +98,19 @@ function getUrl(url, response2, callback){
 });
 }
 
+/* returnLeagueData: Finaliza a request para a API do League.
+ * essa funcao eh utilizada como callback na funcao acima.
+ */
 function returnLeagueData(data, response){
-  response.writeHead(200, {"Content-Type": "text/json"});
-  response.write(JSON.stringify(data));
-  response.end();
+  models.end_request(response, data);
 }
 
 function myLeagueData(response, request){
-  request.body = {"invocador": "gstcamargo"};
-  
+  /* Precisa receber um json no seguinte formato:
+   * {"invocador": <nome_de_invocador>}
+   */
   var invocador = request.body.invocador;
+  /* url: a url da API de league */
   var url = "https://na.api.pvp.net/api/lol/br/v1.4/summoner/by-name/"+invocador+"?api_key=7c20378c-001e-4639-ab96-669be9f17f7f";
   getUrl(url, response, returnLeagueData);
 }
@@ -138,7 +153,7 @@ function buscafiltro(response, request){
   models.getDocumentsFromMongo(response, filtro, colecao);
 }
 
-
+// Lembrem-se sempre dos exports, eles seram utilizados no arquivo index.js :D
 exports.start = start;
 exports.upload = upload;
 exports.show = show;

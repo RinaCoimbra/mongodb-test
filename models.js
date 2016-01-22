@@ -1,8 +1,7 @@
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
-var url = process.env.MONGOLAB_URI || "mongodb://localhost/test";
-
+var url = "mongodb://localhost/test";
 
 var restaurant_1 = {
   "address": {
@@ -40,7 +39,7 @@ var hermione = {
 var alunosHogwarts = [harry, hermione];
 
 var insertDocument = function(colecao, dados, db, callback) {
-  db.collection(colecao).insertOne(dados, function(err, result) {
+  db.collection(colecao).insertOne(hermione, function(err, result) {
     assert.equal(err, null);
     console.log("Inserted a document into the restaurants collection.");
     callback(result);
@@ -71,12 +70,12 @@ function insertDocumentIntoMongo(response, colecao, dados) {
   });
 };
 
-function end_request(response, data_print){
-      response.writeHead(200, {
-        "Content-Type": "text/json"
-      });
-      response.write(JSON.stringify(data_print));
-      response.end();
+function end_request(response, data_print) {
+  response.writeHead(200, {
+    "Content-Type": "text/json"
+  });
+  response.write(JSON.stringify(data_print));
+  response.end();
 }
 
 function getDocumentsFromMongo(response, filtro, colecao) {
@@ -90,21 +89,22 @@ function getDocumentsFromMongo(response, filtro, colecao) {
 };
 
 var removeRestaurants = function(db, callback) {
-   db.collection('restaurants').deleteMany(
-      { "name": "Pizzaiolo" },
-      function(err, results) {
-         console.log(results);
-         callback();
-      }
-   );
+  db.collection('restaurants').deleteMany({
+      "name": "Pizzaiolo"
+    },
+    function(err, results) {
+      console.log(results);
+      callback();
+    }
+  );
 };
 
-var removeFromMongo = function(response){
+var removeFromMongo = function(response) {
   MongoClient.connect(url, function(err, db) {
     assert.equal(null, err);
     removeRestaurants(db, function() {
-        db.close();
-        end_request(response, {});
+      db.close();
+      end_request(response, {});
     });
   });
 };
