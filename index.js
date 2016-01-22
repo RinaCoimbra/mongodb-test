@@ -15,5 +15,6 @@ handle["/getDocumentsFromMongo"] = requestHandlers.getFromMongo;
 handle["/removeFromMongo"] = requestHandlers.removeFromMongo;
 handle["/printjson"] = requestHandlers.printJson;
 handle["/inserejson"] = requestHandlers.insereJson;
+handle["/buscafiltro"] = requestHandlers.buscafiltro;
 
 server.start(router.route, handle);

@@ -47,9 +47,9 @@ var insertDocument = function(colecao, dados, db, callback) {
   });
 };
 
-var findRestaurants = function(db, callback) {
+var findRestaurants = function(filtro, colecao, db, callback) {
   var data = [];
-  var cursor = db.collection('Harry').find();
+  var cursor = db.collection(colecao).find(filtro);
   cursor.each(function(err, doc) {
     assert.equal(err, null);
     if (doc != null) {
@@ -79,10 +79,10 @@ function end_request(response, data_print){
       response.end();
 }
 
-function getDocumentsFromMongo(response) {
+function getDocumentsFromMongo(response, filtro, colecao) {
   MongoClient.connect(url, function(err, db) {
     assert.equal(null, err);
-    findRestaurants(db, function(data) {
+    findRestaurants(filtro, colecao, db, function(data) {
       db.close();
       end_request(response, data)
     });

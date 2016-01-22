@@ -132,6 +132,12 @@ function insereJson(response, request){
   models.insertDocumentIntoMongo(response, colecao, dados);
 }
 
+function buscafiltro(response, request){
+  var filtro = request.body.filtro;
+  var colecao = request.body.colecao;
+  models.getDocumentsFromMongo(response, filtro, colecao);
+}
+
 
 exports.start = start;
 exports.upload = upload;
@@ -144,3 +150,4 @@ exports.getFromMongo = getFromMongo;
 exports.removeFromMongo = removeFromMongo;
 exports.printJson = printJson;
 exports.insereJson = insereJson;
+exports.buscafiltro = buscafiltro;
