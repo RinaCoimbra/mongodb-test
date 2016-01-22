@@ -8,20 +8,25 @@ function start(route, handle) {
     var pathname = url.parse(request.url).pathname;
     console.log("Request for " + pathname + " received.");
     if (request.method == 'POST') {
-        var jsonString = '';
+      var jsonString = '';
 
-        request.on('data', function (data) {
-            jsonString += data;
-        });
+      request.on('data', function(data) {
+        jsonString += data;
+      });
 
-        request.on('end', function () {
+      request.on('end', function() {
+        if (jsonString){
           request.body = JSON.parse(jsonString);
-          route(handle, pathname, response, request);
-        });
-    }else{
+        }
+        else{
+          request.body = {};
+        }
+        route(handle, pathname, response, request);
+      });
+    } else {
       route(handle, pathname, response, request);
     }
-    
+
   }
 
   http.createServer(onRequest).listen(port);
